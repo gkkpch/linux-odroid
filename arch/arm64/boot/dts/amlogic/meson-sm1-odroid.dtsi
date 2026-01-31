@@ -175,14 +175,22 @@
 			};
 		};
 	};
-
+	
+	spdif_dit: audio-codec-0 {
+		#sound-dai-cells = <0>;
+		compatible = "linux,spdif-dit";
+		status = "okay";
+		sound-name-prefix = "DIT";
+	};
+	
 	sound {
 		compatible = "amlogic,axg-sound-card";
 		audio-aux-devs = <&tdmout_b>;
 		audio-routing = "TDMOUT_B IN 0", "FRDDR_A OUT 1",
 				"TDMOUT_B IN 1", "FRDDR_B OUT 1",
 				"TDMOUT_B IN 2", "FRDDR_C OUT 1",
-				"TDM_B Playback", "TDMOUT_B OUT";
+				"TDM_B Playback", "TDMOUT_B OUT",
+				"SPDIFOUT_A IN 0", "FRDDR_A OUT 3";
 
 		assigned-clocks = <&clkc CLKID_MPLL2>,
 				  <&clkc CLKID_MPLL0>,
@@ -227,6 +235,15 @@
 				sound-dai = <&hdmi_tx>;
 			};
 		};
+		/* IEC958 Out */
+		dai-link-5 {
+	    		sound-dai = <&spdifout_a>;
+
+	    		codec-0 {
+				sound-dai = <&spdif_dit>;
+	    		};
+		};		
+		
 	};
 };
 
@@ -463,6 +480,12 @@
 
 &tohdmitx {
 	status = "okay";
+};
+
+&spdifout_a {
+    pinctrl-0 = <&spdif_ao_out_pins>;
+    pinctrl-names = "default";
+    status = "okay";
 };
 
 &uart_AO {
